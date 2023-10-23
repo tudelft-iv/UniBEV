@@ -15,7 +15,6 @@ all sensor modalities follow a uniform approach to resample features from the na
 
 ## Getting Started
 
-
 ## Model Zoo
 
 ## Citation
