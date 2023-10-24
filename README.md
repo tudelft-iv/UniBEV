@@ -14,7 +14,9 @@ all sensor modalities follow a uniform approach to resample features from the na
 ![UniBEV](/assets/unibev.png)
 
 ## Getting Started
-
+- [Installation](docs/installation.md)
+- [Prepare Dataset](docs/prepare_dataset.md)
+- [Run and Eval](docs/run_eval.md)
 ## Model Zoo
 
 ## Citation
