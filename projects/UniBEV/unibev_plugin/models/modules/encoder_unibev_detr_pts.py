@@ -141,7 +141,7 @@ class PtsEncoder(TransformerLayerSequence):
                 prev_bev=None,
                 shift=0.,
                 **kwargs):
-        """Forward function for `UniQueryEncoder`.
+        """Forward function for `UniBEVEncoder`.
 
         """
 

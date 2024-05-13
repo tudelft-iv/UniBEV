@@ -361,7 +361,7 @@ class MSDeformableAttention3DPts(BaseModule):
             query = query.permute(1, 0, 2)
             value = value.permute(1, 0, 2)
         ## debug
-        # print('\nIn MSDeformableAttention3DUniQuerys:')
+        # print('\nIn MSDeformableAttention3D of UniBEV:')
         # print(' query size:', query.size()) # (2, 40000, 512)
         # print(' value size:', value.size()) # (2, 40000, 512)
         # print(' reference_points size:', reference_points.size()) #(2, 40000, 4, 3) original: (bs*self.num_cams, max_len, D, 2)

@@ -45,8 +45,9 @@ git clone https://github.com/open-mmlab/mmdetection3d.git
 git checkout tags/v0.18.1
 cd mmdetection3d
 ```
+**g. Integrate our project into mmdetection3d**
 
-**g. Install build requirements and then install MMDetection3D**
+**h. Install build requirements and then install MMDetection3D**
 ```shell
 pip install -v -e .  # or "python setup.py develop"
 ```

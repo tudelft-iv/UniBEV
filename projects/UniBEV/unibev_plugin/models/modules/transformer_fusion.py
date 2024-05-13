@@ -16,7 +16,7 @@ from torch.nn.init import normal_, constant_
 
 from mmcv.runner.base_module import BaseModule
 from torchvision.transforms.functional import rotate
-from .temporal_self_attention import TemporalSelfAttention
+
 from .spatial_cross_attention import MSDeformableAttention3D
 from .spatial_cross_attention_img import MSDeformableAttention3DImg
 from .spatial_cross_attention_pts import MSDeformableAttention3DPts
@@ -130,23 +130,23 @@ class UniBEVTransformer(BaseModule):
 
     def init_layers(self):
         """Initialize layers of the UniBEVTransformer, based on DETR3D."""
-        if self.feature_norm == 'ChannelNormAttention':
+        if self.feature_norm == 'ChannelNormWeights':
             self.feature_norm_layer = nn.Softmax(dim=0)
             self.pts_channel_weights = nn.Parameter(torch.Tensor(self.embed_dims))
             self.img_channel_weights = nn.Parameter(torch.Tensor(self.embed_dims))
-        elif self.feature_norm == 'MLP_ChannelNormAttention':
+        elif self.feature_norm == 'MLP_ChannelNormWeights':
             self.channel_weights_proj = nn.Sequential(
                 nn.Linear(self.bev_h * self.bev_w * 2, 2),
                 nn.ReLU(inplace=True))
-        elif self.feature_norm == 'Leaky_ReLU_MLP_ChannelNormAttention':
+        elif self.feature_norm == 'Leaky_ReLU_MLP_ChannelNormWeights':
             self.channel_weights_proj = nn.Sequential(
                 nn.Linear(self.bev_h * self.bev_w * 2, 2),
                 nn.LeakyReLU(inplace=True))
-        elif self.feature_norm == 'ELU_MLP_ChannelNormAttention':
+        elif self.feature_norm == 'ELU_MLP_ChannelNormWeights':
             self.channel_weights_proj = nn.Sequential(
                 nn.Linear(self.bev_h * self.bev_w * 2, 2),
                 nn.ELU(inplace=True))
-        elif self.feature_norm == 'Sigmoid_MLP_ChannelNormAttention':
+        elif self.feature_norm == 'Sigmoid_MLP_ChannelNormWeights':
             self.channel_weights_proj = nn.Sequential(
                 nn.Linear(self.bev_h * self.bev_w * 2, 2),
                 nn.Sigmoid())
@@ -155,7 +155,7 @@ class UniBEVTransformer(BaseModule):
             self.c_modal_proj = ModalityProjectionModule(self.embed_dims)
             self.l_modal_proj = ModalityProjectionModule(self.embed_dims)
 
-        if self.spatial_norm == 'SpatialNormAttention':
+        if self.spatial_norm == 'SpatialNormWeights':
             self.spatial_norm_layer = nn.Softmax(dim=0)
             self.pts_spatial_weights = nn.Parameter(torch.Tensor(self.bev_h*self.bev_w))
             self.img_spatial_weights = nn.Parameter(torch.Tensor(self.bev_h*self.bev_w))
@@ -199,22 +199,22 @@ class UniBEVTransformer(BaseModule):
         if self.with_img_bev_encoder:
             normal_(self.img_level_embeds)
             normal_(self.cams_embeds)
-        if self.feature_norm == 'ChannelNormAttention':
+        if self.feature_norm == 'ChannelNormWeights':
             if self.cna_constant_norm == True:
                 constant_(self.pts_channel_weights, 0.5)
                 constant_(self.img_channel_weights, 0.5)
             else:
                 normal_(self.pts_channel_weights)
                 normal_(self.img_channel_weights)
-        if self.feature_norm in ('MLP_ChannelNormAttention',
-                                 'Leaky_ReLU_MLP_ChannelNormAttention',
-                                 'ELU_MLP_ChannelNormAttention',
-                                 'Sigmoid_MLP_ChannelNormAttention'):
+        if self.feature_norm in ('MLP_ChannelNormWeights',
+                                 'Leaky_ReLU_MLP_ChannelNormWeights',
+                                 'ELU_MLP_ChannelNormWeights',
+                                 'Sigmoid_MLP_ChannelNormWeights'):
             xavier_init(self.channel_weights_proj, distribution='uniform', bias=0)
         if self.feature_norm == 'ModalityProjection':
             xavier_init(self.c_modal_proj)
             xavier_init(self.l_modal_proj)
-        if self.spatial_norm == 'SpatialNormAttention':
+        if self.spatial_norm == 'SpatialNormWeights':
             normal_(self.pts_spatial_weights)
             normal_(self.img_spatial_weights)
 
@@ -321,7 +321,7 @@ class UniBEVTransformer(BaseModule):
         elif pts_bev_embed is None:
             pts_bev_embed = torch.zeros_like(img_bev_embed)
         vis_data = None
-        if self.feature_norm == 'ChannelNormAttention':
+        if self.feature_norm == 'ChannelNormWeights':
             channel_weight_list = []
             channel_weight_list.append(self.img_channel_weights.unsqueeze(0))
             channel_weight_list.append(self.pts_channel_weights.unsqueeze(0))
@@ -343,10 +343,10 @@ class UniBEVTransformer(BaseModule):
                     img_norm_weights = img_norm_weights,
                     pts_norm_weights = pts_norm_weights
                 )
-        elif self.feature_norm in ('MLP_ChannelNormAttention',
-                                   'Leaky_ReLU_MLP_ChannelNormAttention',
-                                   'ELU_MLP_ChannelNormAttention',
-                                   'Sigmoid_MLP_ChannelNormAttention'):
+        elif self.feature_norm in ('MLP_ChannelNormWeights',
+                                   'Leaky_ReLU_MLP_ChannelNormWeights',
+                                   'ELU_MLP_ChannelNormWeights',
+                                   'Sigmoid_MLP_ChannelNormWeights'):
             input_bev_feats = torch.cat([img_bev_embed, pts_bev_embed], dim=1).permute(0,2,1)
             multi_modal_channel_weights = self.channel_weights_proj(input_bev_feats)
 
@@ -387,7 +387,7 @@ class UniBEVTransformer(BaseModule):
     def spatial_feature_norm(self, img_bev_embed, pts_bev_embed):
         # (bs, bev_h * bev_w, embed_dims)
         vis_data = None
-        if self.spatial_norm == 'SpatialNormAttention':
+        if self.spatial_norm == 'SpatialNormWeights':
             spatial_weight_list = []
             spatial_weight_list.append(self.img_spatial_weights.unsqueeze(0))
             spatial_weight_list.append(self.pts_spatial_weights.unsqueeze(0))

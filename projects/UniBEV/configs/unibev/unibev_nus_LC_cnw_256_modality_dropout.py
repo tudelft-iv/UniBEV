@@ -3,7 +3,7 @@
 hostname = 'hpc'
 eval_interval = 3
 samples_per_gpu = 2
-workers_per_gpu = 8
+workers_per_gpu = 2
 max_epochs = 36
 save_interval = 6
 log_interval = 10
@@ -16,7 +16,7 @@ data_root = 'data/nuscenes/'
 sub_dir = 'mmdet3d_bevformer/'
 train_ann_file = sub_dir + 'nuscenes_infos_temporal_train.pkl'
 val_ann_file = sub_dir + 'nuscenes_infos_temporal_val.pkl'
-work_dir = './outputs/train/uniquery_detr_voxel_net_fusion_linear_channel_norm_attn_256_pip4_layer_3_nus_LC_full_3'
+work_dir = './outputs/train/unibev_cnw_dim_256_nus_LC_full'
 
 load_from = 'checkpoints/focos_3d_r101_centerpoint.pth'
 if hostname == 'iv-mind':
@@ -24,7 +24,7 @@ if hostname == 'iv-mind':
 
 resume_from = None
 plugin = True
-plugin_dir = 'mmdet3d/bevformer_plugin/'
+plugin_dir = 'mmdet3d/unibev_plugin/'
 
 ## nuscenes and pointpillars setting
 point_cloud_range = [-54, -54, -5, 54, 54, 3]
@@ -186,7 +186,7 @@ data = dict(
     nonshuffler_sampler=dict(type='DistributedSampler'))
 
 model = dict(
-    type='UniQueryDETRFusion',
+    type='UniBEV',
     use_grid_mask=True,
     pts_voxel_layer=dict(
         max_num_points=10,
@@ -248,7 +248,7 @@ model = dict(
         num_outs=_num_levels_,
         relu_before_extra_convs=True),
     pts_bbox_head=dict(
-        type='UniQueryDETRFusion_Head',
+        type='UniBEV_Head',
         bev_h=bev_h_,
         bev_w=bev_w_,
         num_query=900,
@@ -258,29 +258,29 @@ model = dict(
         with_box_refine=True,
         as_two_stage=False,
         transformer=dict(
-            type='UniQueryTransformer',
+            type='UniBEVTransformer',
             embed_dims=_dim_,
             fusion_method=fusion_method,
             drop_modality=modality_dropout_prob,
             feature_norm=feature_norm,
             img_encoder=dict(
-                type='UniqueryDETR_ImgEncoder',
+                type='ImgEncoder',
                 num_layers=_encoder_layers_,
                 pc_range=point_cloud_range,
                 num_points_in_pillar=_num_points_in_pillar_cam_,
                 return_intermediate=False,
                 transformerlayers=dict(
-                    type='UniQueryDETR_ImgLayer',
+                    type='ImgLayer',
                     attn_cfgs=[
                         dict(
                             type='MultiScaleDeformableAttention',
                             embed_dims=_dim_,
                             num_levels=1),
                         dict(
-                            type='SpatialCrossAttentionUniQueryImg',
+                            type='SpatialCrossAttentionImg',
                             pc_range=point_cloud_range,
                             deformable_attention=dict(
-                                type='MSDeformableAttention3DUniQueryImg',
+                                type='MSDeformableAttention3DImg',
                                 embed_dims=_dim_,
                                 num_points=8,
                                 num_levels=_num_levels_),
@@ -296,23 +296,23 @@ model = dict(
                     operation_order=('self_attn', 'norm', 'cross_attn', 'norm',
                                      'ffn', 'norm'))),
             pts_encoder=dict(
-                type='UniqueryDETR_PtsEncoder',
+                type='PtsEncoder',
                 num_layers=_encoder_layers_,
                 pc_range=point_cloud_range,
                 num_points_in_pillar_lidar=_num_points_in_pillar_lidar_,
                 return_intermediate=False,
                 transformerlayers=dict(
-                    type='UniQueryDETR_PtsLayer',
+                    type='PtsLayer',
                     attn_cfgs=[
                         dict(
                             type='MultiScaleDeformableAttention',
                             embed_dims=_dim_,
                             num_levels=1),
                         dict(
-                            type='SpatialCrossAttentionUniQueryPts',
+                            type='SpatialCrossAttentionPts',
                             pc_range=point_cloud_range,
                             deformable_attention=dict(
-                                type='MSDeformableAttention3DUniQueryPts',
+                                type='MSDeformableAttention3DPts',
                                 embed_dims=_dim_,
                                 num_points=8,
                                 num_levels=_num_levels_),
@@ -409,7 +409,7 @@ log_config = dict(
     hooks=[
         dict(type='TextLoggerHook'),
         dict(type='TensorboardLoggerHook'),
-        dict(type='WandbLoggerHook')
+#        dict(type='WandbLoggerHook')
     ])
 # yapf:enable
 dist_params = dict(backend='nccl')
