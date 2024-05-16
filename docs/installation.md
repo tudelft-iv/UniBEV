@@ -1,5 +1,5 @@
 # Installation
-Our implementstation is based on [mmdetection3d](https://github.com/open-mmlab/mmdetection3d/tree/v0.18.1)
+Our implementation is based on [mmdetection3d](https://github.com/open-mmlab/mmdetection3d/tree/v0.18.1)
 
 ## Environment
 ### Versions of key components
@@ -13,8 +13,8 @@ Following the instruction: https://github.com/open-mmlab/mmdetection3d/blob/v0.1
 
 ** a. Create a conda virtual environment and activate it.** 
 ```shell
-conda create -n open-mmlab python=3.7 -y
-conda activate open-mmlab
+conda create -n unibev python=3.7 -y
+conda activate unibev
 ```
 
 **b. Install PyTorch and torchvision following the [official instructions](https://pytorch.org/).**
@@ -42,8 +42,8 @@ pip install mmsegmentation==0.20.0
 **f. Clone the MMDetection3D repository**
 ```shell
 git clone https://github.com/open-mmlab/mmdetection3d.git
-git checkout tags/v0.18.1
 cd mmdetection3d
+git checkout tags/v0.18.1
 ```
 **g. Integrate our project into mmdetection3d**
 
