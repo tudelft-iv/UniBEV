@@ -41,13 +41,22 @@ pip install mmsegmentation==0.20.0
 
 **f. Clone the MMDetection3D repository**
 ```shell
-git clone https://github.com/open-mmlab/mmdetection3d.git
+git clone https://github.com/open-mmlab/mmdetection3d.git $MMDET3D_ROOT
 cd mmdetection3d
 git checkout tags/v0.18.1
 ```
 **g. Integrate our project into mmdetection3d**
+```shell
+ln -s $UniBEV_ROOT/projects/UniBEV $MMDET3D_ROOT/projects
+ln -s $UniBEV_ROOT/projects/UniBEV/unibev_plugin $MMDET3D_ROOT/mmdet3d
+```
 
 **h. Install build requirements and then install MMDetection3D**
 ```shell
 pip install -v -e .  # or "python setup.py develop"
+```
+
+**i. Install some extra packages to avoid some bugs**
+```shell 
+pip install yapf==0.40.1
 ```

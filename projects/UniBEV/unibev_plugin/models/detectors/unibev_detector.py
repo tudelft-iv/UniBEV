@@ -6,7 +6,7 @@ from mmdet3d.core import bbox3d2result
 from mmdet3d.models import builder
 from mmdet3d.models.detectors.mvx_two_stage import MVXTwoStageDetector
 
-from unibev_plugin.models.utils.grid_mask import GridMask
+from mmdet3d.unibev_plugin.models.utils.grid_mask import GridMask
 from mmcv.ops import Voxelization
 import time
 import copy

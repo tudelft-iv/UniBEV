@@ -1,6 +1,5 @@
 # Joint training process based on respectively trained 2D and 3D backbone
 
-hostname = 'hpc'
 eval_interval = 3
 samples_per_gpu = 2
 workers_per_gpu = 2
@@ -11,20 +10,18 @@ fusion_method = 'linear'
 feature_norm = 'ChannelNormWeights'
 modality_dropout_prob = 0.5
 
-dataset_type = 'NuScenesDataset_BEVFormerFusion'
+dataset_type = 'NuScenesDataset'
 data_root = 'data/nuscenes/'
-sub_dir = 'mmdet3d_bevformer/'
-train_ann_file = sub_dir + 'nuscenes_infos_temporal_train.pkl'
-val_ann_file = sub_dir + 'nuscenes_infos_temporal_val.pkl'
+sub_dir = 'mmdet3d_old_cor/'
+train_ann_file = sub_dir + 'mini_nuscenes_infos_train.pkl'
+val_ann_file = sub_dir + 'mini_nuscenes_infos_val.pkl'
 work_dir = './outputs/train/unibev_cnw_dim_256_nus_LC_full'
 
 load_from = 'checkpoints/focos_3d_r101_centerpoint.pth'
-if hostname == 'iv-mind':
-    load_from = 'remote_mounted/' + load_from
 
 resume_from = None
 plugin = True
-plugin_dir = 'projects/UniBEV/unibev_plugin/'
+plugin_dir = 'mmdet3d/unibev_plugin/'
 
 ## nuscenes and pointpillars setting
 point_cloud_range = [-54, -54, -5, 54, 54, 3]

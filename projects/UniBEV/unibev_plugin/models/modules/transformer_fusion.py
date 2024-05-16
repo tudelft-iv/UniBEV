@@ -17,7 +17,6 @@ from torch.nn.init import normal_, constant_
 from mmcv.runner.base_module import BaseModule
 from torchvision.transforms.functional import rotate
 
-from .spatial_cross_attention import MSDeformableAttention3D
 from .spatial_cross_attention_img import MSDeformableAttention3DImg
 from .spatial_cross_attention_pts import MSDeformableAttention3DPts
 from mmcv.ops.multi_scale_deform_attn import MultiScaleDeformableAttention
