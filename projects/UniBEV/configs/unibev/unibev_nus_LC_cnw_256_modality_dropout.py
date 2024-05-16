@@ -24,7 +24,7 @@ if hostname == 'iv-mind':
 
 resume_from = None
 plugin = True
-plugin_dir = 'mmdet3d/unibev_plugin/'
+plugin_dir = 'projects/UniBEV/unibev_plugin/'
 
 ## nuscenes and pointpillars setting
 point_cloud_range = [-54, -54, -5, 54, 54, 3]
