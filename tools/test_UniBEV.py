@@ -19,8 +19,6 @@ from mmdet3d.datasets import build_dataloader, build_dataset
 from mmdet3d.models import build_model
 from mmdet.apis import multi_gpu_test, set_random_seed
 from mmdet.datasets import replace_ImageToTensor
-import time
-import os.path as osp
 
 
 def parse_args():
@@ -189,9 +187,7 @@ def main():
         samples_per_gpu=samples_per_gpu,
         workers_per_gpu=cfg.data.workers_per_gpu,
         dist=distributed,
-        shuffle=False,
-        nonshuffler_sampler=cfg.data.nonshuffler_sampler,
-    )
+        shuffle=False)
 
     # build the model and load checkpoint
     cfg.model.train_cfg = None
@@ -233,8 +229,6 @@ def main():
             print(f'\nwriting results to {args.out}')
             mmcv.dump(outputs, args.out)
         kwargs = {} if args.eval_options is None else args.eval_options
-        # kwargs['jsonfile_prefix'] = osp.join('test', args.config.split(
-        #     '/')[-1].split('.')[-2], time.ctime().replace(' ', '_').replace(':', '_'))
         if args.format_only:
             dataset.format_results(outputs, **kwargs)
 

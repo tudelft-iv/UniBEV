@@ -59,4 +59,5 @@ pip install -v -e .  # or "python setup.py develop"
 **i. Install some extra packages to avoid some bugs**
 ```shell 
 pip install yapf==0.40.1
+conda install setuptools=58.2.0
 ```

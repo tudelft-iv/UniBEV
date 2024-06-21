@@ -1,33 +1,32 @@
-# Joint training process based on respectively trained 2D and 3D backbone
-# BEVFusion-PointPillars
-# total in 12 epochs
+# End-to-end training for UniBEV_CNW
+# CNW
+# Encoder Dimension: 256
+# Decoder Dimension: 256
+# seperate queries
 
-hostname = 'hpc'
-eval_interval = 3
-samples_per_gpu = 2
-workers_per_gpu = 8
+eval_interval = 1
+samples_per_gpu = 1
+workers_per_gpu = 2
 max_epochs = 36
 save_interval = 6
 log_interval = 10
 fusion_method = 'linear'
-feature_norm = 'ChannelNormAttention'
+feature_norm = 'ChannelNormWeights'
 modality_dropout_prob = 0.5
 dual_queries = True
 
-dataset_type = 'NuScenesDataset_BEVFormerFusion'
+dataset_type = 'NuScenesDataset'
 data_root = 'data/nuscenes/'
-sub_dir = 'mmdet3d_bevformer/'
-train_ann_file = sub_dir + 'nuscenes_infos_temporal_train.pkl'
-val_ann_file = sub_dir + 'nuscenes_infos_temporal_val.pkl'
-work_dir = './outputs/train/uniquery_detr_voxel_net_fusion_linear_channel_norm_attn_dual_queries_256_pip4_layer_3_nus_LC_full_a40'
+sub_dir = 'mmdet3d_old_cor/'
+train_ann_file = sub_dir + 'mini_nuscenes_infos_train.pkl'
+val_ann_file = sub_dir + 'nuscenes_infos_val.pkl'
+work_dir = './outputs/train/unibev_cnw_dim_256_nus_LC_full_dual_queires'
 
-load_from = 'checkpoints/focos_3d_r101_centerpoint.pth'
-if hostname == 'iv-mind':
-    load_from = 'remote_mounted/' + load_from
+load_from = 'remote_checkpoints/focos_3d_r101_centerpoint.pth'
 
-resume_from = None # './outputs/train/uniquery_detr_voxel_net_fusion_linear_channel_norm_attn_daul_queries_256_pip4_layer_3_nus_LC_1_4/epoch_6.pth'
+resume_from = None
 plugin = True
-plugin_dir = 'mmdet3d/bevformer_plugin/'
+plugin_dir = 'mmdet3d/unibev_plugin/'
 
 ## nuscenes and pointpillars setting
 point_cloud_range = [-54, -54, -5, 54, 54, 3]
@@ -62,7 +61,6 @@ _num_points_in_pillar_cam_ = 4
 _num_points_in_pillar_lidar_ = 4
 bev_h_ = 200
 bev_w_ = 200
-queue_length = 3 # each sequence contains `queue_length` frames.
 img_norm_cfg = dict(mean=[103.530, 116.280, 123.675], std=[1.0, 1.0, 1.0], to_rgb=False)
 
 runner = dict(type='EpochBasedRunner',
@@ -92,7 +90,7 @@ train_pipeline = [
     dict(type='PointShuffle'),
     dict(type='NormalizeMultiviewImage', **img_norm_cfg),
     dict(type='PadMultiViewImage', size_divisor=32),
-    dict(type='DefaultFormatBundle3DBEVFusion', class_names=class_names), ## which DefaultFormat
+    dict(type='DefaultFormatBundle3D', class_names=class_names), ## which DefaultFormat
     dict(type='CustomCollect3D', keys=['points', 'img', 'gt_bboxes_3d', 'gt_labels_3d']) ## which data collection
 ]
 test_pipeline = [
@@ -121,7 +119,7 @@ test_pipeline = [
         transforms=[
             dict(type='PadMultiViewImage', size_divisor=32),
             dict(
-                type='DefaultFormatBundle3DBEVFusion',
+                type='DefaultFormatBundle3D',
                 class_names=class_names,
                 with_label=False),
             dict(type='CustomCollect3D', keys=['points', 'img'])
@@ -160,8 +158,6 @@ data = dict(
             modality=input_modality,
             test_mode=False,
             use_valid_flag=True,
-            bev_size=(bev_h_, bev_w_),
-            queue_length=queue_length,
             box_type_3d='LiDAR'),
     val=dict(
         type=dataset_type,
@@ -169,7 +165,6 @@ data = dict(
         ann_file=data_root + val_ann_file,
         load_interval=1,
         pipeline=test_pipeline,
-        bev_size=(bev_h_, bev_w_),
         classes=class_names,
         modality=input_modality,
         test_mode=True,
@@ -182,14 +177,13 @@ data = dict(
         pipeline=test_pipeline,
         classes=class_names,
         modality=input_modality,
-        samples_per_gpu=1,
         test_mode=True,
         box_type_3d='LiDAR'),
     shuffler_sampler=dict(type='DistributedGroupSampler'),
     nonshuffler_sampler=dict(type='DistributedSampler'))
 
 model = dict(
-    type='UniQueryDETRFusion',
+    type='UniBEV',
     use_grid_mask=True,
     pts_voxel_layer=dict(
         max_num_points=10,
@@ -251,7 +245,7 @@ model = dict(
         num_outs=_num_levels_,
         relu_before_extra_convs=True),
     pts_bbox_head=dict(
-        type='UniQueryDETRFusion_Head',
+        type='UniBEV_Head',
         bev_h=bev_h_,
         bev_w=bev_w_,
         num_query=900,
@@ -261,30 +255,30 @@ model = dict(
         with_box_refine=True,
         as_two_stage=False,
         transformer=dict(
-            type='UniQueryTransformer',
+            type='UniBEVTransformer',
             embed_dims=_dim_,
             fusion_method=fusion_method,
             drop_modality=modality_dropout_prob,
             feature_norm=feature_norm,
             dual_queries = dual_queries,
             img_encoder=dict(
-                type='UniqueryDETR_ImgEncoder',
+                type='ImgEncoder',
                 num_layers=_encoder_layers_,
                 pc_range=point_cloud_range,
                 num_points_in_pillar=_num_points_in_pillar_cam_,
                 return_intermediate=False,
                 transformerlayers=dict(
-                    type='UniQueryDETR_ImgLayer',
+                    type='ImgLayer',
                     attn_cfgs=[
                         dict(
                             type='MultiScaleDeformableAttention',
                             embed_dims=_dim_,
                             num_levels=1),
                         dict(
-                            type='SpatialCrossAttentionUniQueryImg',
+                            type='SpatialCrossAttentionImg',
                             pc_range=point_cloud_range,
                             deformable_attention=dict(
-                                type='MSDeformableAttention3DUniQueryImg',
+                                type='MSDeformableAttention3DImg',
                                 embed_dims=_dim_,
                                 num_points=8,
                                 num_levels=_num_levels_),
@@ -300,23 +294,23 @@ model = dict(
                     operation_order=('self_attn', 'norm', 'cross_attn', 'norm',
                                      'ffn', 'norm'))),
             pts_encoder=dict(
-                type='UniqueryDETR_PtsEncoder',
+                type='PtsEncoder',
                 num_layers=_encoder_layers_,
                 pc_range=point_cloud_range,
                 num_points_in_pillar_lidar=_num_points_in_pillar_lidar_,
                 return_intermediate=False,
                 transformerlayers=dict(
-                    type='UniQueryDETR_PtsLayer',
+                    type='PtsLayer',
                     attn_cfgs=[
                         dict(
                             type='MultiScaleDeformableAttention',
                             embed_dims=_dim_,
                             num_levels=1),
                         dict(
-                            type='SpatialCrossAttentionUniQueryPts',
+                            type='SpatialCrossAttentionPts',
                             pc_range=point_cloud_range,
                             deformable_attention=dict(
-                                type='MSDeformableAttention3DUniQueryPts',
+                                type='MSDeformableAttention3DPts',
                                 embed_dims=_dim_,
                                 num_points=8,
                                 num_levels=_num_levels_),
@@ -413,7 +407,7 @@ log_config = dict(
     hooks=[
         dict(type='TextLoggerHook'),
         dict(type='TensorboardLoggerHook'),
-        dict(type='WandbLoggerHook')
+#        dict(type='WandbLoggerHook')
     ])
 # yapf:enable
 dist_params = dict(backend='nccl')

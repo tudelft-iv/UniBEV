@@ -264,14 +264,16 @@ class UniBEV(MVXTwoStageDetector):
             assert points is not None
         if self.use_radar:
             assert radar is not None
-
-        if img is not None:
-            len_queue = img.size(1)
-            img = img[:, -1, ...]
-        else:
-            len_queue = 3
-            img = None
-        img_metas = [each[len_queue - 1] for each in img_metas]
+        # print(img.shape)
+        # print(len(img_metas))
+        # print(img_metas[0].keys())
+        # if img is not None:
+        #     len_queue = img.size(1)
+        #     img = img[:, -1, ...]
+        # else:
+        #     len_queue = 3
+        #     img = None
+        # img_metas = [each[len_queue - 1] for each in img_metas]
         img_feats, lidar_feats, radar_feats = self.extract_feat(img=img, points=points, radar_points= radar, img_metas=img_metas)
 
         losses = dict()

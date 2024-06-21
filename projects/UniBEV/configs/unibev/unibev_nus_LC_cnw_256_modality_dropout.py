@@ -1,7 +1,10 @@
-# Joint training process based on respectively trained 2D and 3D backbone
+# End-to-end training for UniBEV_CNW
+# CNW
+# Encoder Dimension: 256
+# Decoder Dimension: 256
 
-eval_interval = 3
-samples_per_gpu = 2
+eval_interval = 1
+samples_per_gpu = 1
 workers_per_gpu = 2
 max_epochs = 36
 save_interval = 6
@@ -14,10 +17,10 @@ dataset_type = 'NuScenesDataset'
 data_root = 'data/nuscenes/'
 sub_dir = 'mmdet3d_old_cor/'
 train_ann_file = sub_dir + 'mini_nuscenes_infos_train.pkl'
-val_ann_file = sub_dir + 'mini_nuscenes_infos_val.pkl'
+val_ann_file = sub_dir + 'nuscenes_infos_val.pkl'
 work_dir = './outputs/train/unibev_cnw_dim_256_nus_LC_full'
 
-load_from = 'checkpoints/focos_3d_r101_centerpoint.pth'
+load_from = 'remote_checkpoints/focos_3d_r101_centerpoint.pth'
 
 resume_from = None
 plugin = True
@@ -56,7 +59,6 @@ _num_points_in_pillar_cam_ = 4
 _num_points_in_pillar_lidar_ = 4
 bev_h_ = 200
 bev_w_ = 200
-queue_length = 3 # each sequence contains `queue_length` frames.
 img_norm_cfg = dict(mean=[103.530, 116.280, 123.675], std=[1.0, 1.0, 1.0], to_rgb=False)
 
 runner = dict(type='EpochBasedRunner',
@@ -86,7 +88,7 @@ train_pipeline = [
     dict(type='PointShuffle'),
     dict(type='NormalizeMultiviewImage', **img_norm_cfg),
     dict(type='PadMultiViewImage', size_divisor=32),
-    dict(type='DefaultFormatBundle3DBEVFusion', class_names=class_names), ## which DefaultFormat
+    dict(type='DefaultFormatBundle3D', class_names=class_names), ## which DefaultFormat
     dict(type='CustomCollect3D', keys=['points', 'img', 'gt_bboxes_3d', 'gt_labels_3d']) ## which data collection
 ]
 test_pipeline = [
@@ -115,7 +117,7 @@ test_pipeline = [
         transforms=[
             dict(type='PadMultiViewImage', size_divisor=32),
             dict(
-                type='DefaultFormatBundle3DBEVFusion',
+                type='DefaultFormatBundle3D',
                 class_names=class_names,
                 with_label=False),
             dict(type='CustomCollect3D', keys=['points', 'img'])
@@ -154,8 +156,6 @@ data = dict(
             modality=input_modality,
             test_mode=False,
             use_valid_flag=True,
-            bev_size=(bev_h_, bev_w_),
-            queue_length=queue_length,
             box_type_3d='LiDAR'),
     val=dict(
         type=dataset_type,
@@ -163,7 +163,6 @@ data = dict(
         ann_file=data_root + val_ann_file,
         load_interval=1,
         pipeline=test_pipeline,
-        bev_size=(bev_h_, bev_w_),
         classes=class_names,
         modality=input_modality,
         test_mode=True,
@@ -176,7 +175,6 @@ data = dict(
         pipeline=test_pipeline,
         classes=class_names,
         modality=input_modality,
-        samples_per_gpu=1,
         test_mode=True,
         box_type_3d='LiDAR'),
     shuffler_sampler=dict(type='DistributedGroupSampler'),

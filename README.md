@@ -28,7 +28,6 @@ all sensor modalities follow a uniform approach to resample features from the na
 ## Model Zoo
 
 ## Poster
-
 [View Poster via here](https://surfdrive.surf.nl/files/index.php/s/Kuxogt4IKdPuNgz)
 ## Citation
 ```
