@@ -13,9 +13,9 @@ all sensor modalities follow a uniform approach to resample features from the na
 ## Update Logs
 + 2024.05.30: updated the core codes and components
 + 2024.06.22: updated the config files, pre-trained weights for the main results
++ 2024.06.22: upload the Singularity image and recipe
 
 ## TODO List
-+ upload the Singularity image for the environment
 + upload the pre-trained weights for the ablation studies
 + upload inference configuration files
 
@@ -23,6 +23,7 @@ all sensor modalities follow a uniform approach to resample features from the na
 ![UniBEV](/assets/unibev.png)
 
 ## Getting Started
+- Set Environment with cuda 11.3 (Singularity [image](https://surfdrive.surf.nl/files/index.php/s/UMfSSSb5T40kcwd), [recipe](https://surfdrive.surf.nl/files/index.php/s/37HNgaVGEWAowet))
 - [Installation](docs/installation.md)
 - [Prepare Dataset](docs/prepare_dataset.md)
 - [Run and Eval](docs/run_eval.md)
@@ -46,7 +47,7 @@ Please refer the paper for more details.
 |-|-|-|-|:--:|:--:|:--:|:--:|:--:|
 |[UniBEV_CNW](/projects/UniBEV/configs/unibev/ablation_md/unibev_nus_LC_cnw_256_modality_dropout_m50s50l0c100.py)|0.5|0   |1   |63.2|45.5|36.0|48.2|link|
 |[UniBEV_CNW](/projects/UniBEV/configs/unibev/ablation_md/unibev_nus_LC_cnw_256_modality_dropout_m50s50l25c75.py)|0.5|0.25|0.75|64.0|57.8|35.8|52.5|link|
-|<ins>UniBEV_CNW</ins>|0.5|0.5 |0.5|64.2|58.2|35.0|52.5|link|
+|_**UniBEV_CNW**_|0.5|0.5 |0.5|64.2|58.2|35.0|52.5|link|
 |[UniBEV_CNW](/projects/UniBEV/configs/unibev/ablation_md/unibev_nus_LC_cnw_256_modality_dropout_m50s50l75c25.py)|0.5|0.75|0.25|63.8|58.3|33.2|51.8|link|
 |[UniBEV_CNW](/projects/UniBEV/configs/unibev/ablation_md/unibev_nus_LC_cnw_256_modality_dropout_m50s50l0c100.py)|0.5|0   |1   |60.8|55.9|3.0 |39.9|link|
 
@@ -55,7 +56,7 @@ Please refer the paper for more details.
 |-|-|-|-|:--:|:--:|:--:|:--:|:--:|
 |[UniBEV_CNW](/projects/UniBEV/configs/unibev/ablation_md/unibev_nus_LC_cnw_256_modality_dropout_m0s100l50c50.py)|1|0.5|0.5|60.9|56.5|37.1|51.5|link|
 |[UniBEV_CNW](/projects/UniBEV/configs/unibev/ablation_md/unibev_nus_LC_cnw_256_modality_dropout_m25s75l50c50.py)|0.75|0.5|0.5|63.1|56.2|36.6|52.0|link|
-|<ins>UniBEV_CNW</ins>|0.5|0.5 |0.5|64.2|58.2|35.0|52.5|link|
+|_**UniBEV_CNW**_|0.5|0.5 |0.5|64.2|58.2|35.0|52.5|link|
 |[UniBEV_CNW](/projects/UniBEV/configs/unibev/ablation_md/unibev_nus_LC_cnw_256_modality_dropout_m75s25l50c50.py)|0.25|0.5|0.5|62.6|55.9|33.6|50.7|link|
 |[UniBEV_CNW](/projects/UniBEV/configs/unibev/ablation_md/unibev_nus_LC_cnw_256_modality_dropout_m100s0l50c50.py)|0|0.5|0.5|62.6|50.6|4.6 |39.9|link|
 
