@@ -14,10 +14,8 @@ all sensor modalities follow a uniform approach to resample features from the na
 + 2024.05.30: updated the core codes and components
 + 2024.06.22: updated the config files, pre-trained weights for the main results
 + 2024.06.22: upload the Singularity image and recipe
-
-## TODO List
-+ upload the pre-trained weights for the ablation studies
-+ upload inference configuration files
++ 2024.06.26: upload the pre-trained weights for the ablation study
++ 2024.06.26: update the inference configuration files for both multi-modal and uni-modal input
 
 ## Methods
 ![UniBEV](/assets/unibev.png)
@@ -29,7 +27,8 @@ all sensor modalities follow a uniform approach to resample features from the na
 - [Run and Eval](docs/run_eval.md)
 ## Models on nuScenes val
 ### Pretrained weights
-model
+[model](https://surfdrive.surf.nl/files/index.php/s/DYgjX6RWyVkawul)
+
 ### Main results
 |Method|Training Modality|L+C mAP| L mAP| C mAP|Summary| Model |
 |------|:---------------:|:-----:|------|------|-------|-------|
@@ -45,20 +44,20 @@ Please refer the paper for more details.
 ### Effect of Sensor Dropping Probabilities p<sub>L</sub> and p<sub>C</sub>
 |Model|p<sub>md</sub>|p<sub>L</sub>|p<sub>C</sub>|L+C mAP|L mAP|C mAP|Summary| Model|
 |-|-|-|-|:--:|:--:|:--:|:--:|:--:|
-|[UniBEV_CNW](/projects/UniBEV/configs/unibev/ablation_md/unibev_nus_LC_cnw_256_modality_dropout_m50s50l0c100.py)|0.5|0   |1   |63.2|45.5|36.0|48.2|link|
-|[UniBEV_CNW](/projects/UniBEV/configs/unibev/ablation_md/unibev_nus_LC_cnw_256_modality_dropout_m50s50l25c75.py)|0.5|0.25|0.75|64.0|57.8|35.8|52.5|link|
+|[UniBEV_CNW](/projects/UniBEV/configs/unibev/ablation_md/unibev_nus_LC_cnw_256_modality_dropout_m50s50l0c100.py)|0.5|0   |1   |63.2|45.5|36.0|48.2|[link](https://surfdrive.surf.nl/files/index.php/s/BZyiWFQZQDWS2BT)|
+|[UniBEV_CNW](/projects/UniBEV/configs/unibev/ablation_md/unibev_nus_LC_cnw_256_modality_dropout_m50s50l25c75.py)|0.5|0.25|0.75|64.0|57.8|35.8|52.5|[link](https://surfdrive.surf.nl/files/index.php/s/A8zmEWLq5VZncW9)|
 |_**UniBEV_CNW**_|0.5|0.5 |0.5|64.2|58.2|35.0|52.5|link|
-|[UniBEV_CNW](/projects/UniBEV/configs/unibev/ablation_md/unibev_nus_LC_cnw_256_modality_dropout_m50s50l75c25.py)|0.5|0.75|0.25|63.8|58.3|33.2|51.8|link|
-|[UniBEV_CNW](/projects/UniBEV/configs/unibev/ablation_md/unibev_nus_LC_cnw_256_modality_dropout_m50s50l0c100.py)|0.5|0   |1   |60.8|55.9|3.0 |39.9|link|
+|[UniBEV_CNW](/projects/UniBEV/configs/unibev/ablation_md/unibev_nus_LC_cnw_256_modality_dropout_m50s50l75c25.py)|0.5|0.75|0.25|63.8|58.3|33.2|51.8|[link](https://surfdrive.surf.nl/files/index.php/s/1RR1LNW2EjrzrjS)|
+|[UniBEV_CNW](/projects/UniBEV/configs/unibev/ablation_md/unibev_nus_LC_cnw_256_modality_dropout_m50s50l100c0.py)|0.5|1   |0   |60.8|55.9|3.0 |39.9|[link](https://surfdrive.surf.nl/files/index.php/s/k2RmYydvlNIngQy)|
 
 ### Effect of Modality Dropout Probability p<sub>md</sub> (not included in the paper)
 |Model|p<sub>md</sub>|p<sub>L</sub>|p<sub>C</sub>|L+C mAP|L mAP|C mAP|Summary| Model|
 |-|-|-|-|:--:|:--:|:--:|:--:|:--:|
-|[UniBEV_CNW](/projects/UniBEV/configs/unibev/ablation_md/unibev_nus_LC_cnw_256_modality_dropout_m0s100l50c50.py)|1|0.5|0.5|60.9|56.5|37.1|51.5|link|
-|[UniBEV_CNW](/projects/UniBEV/configs/unibev/ablation_md/unibev_nus_LC_cnw_256_modality_dropout_m25s75l50c50.py)|0.75|0.5|0.5|63.1|56.2|36.6|52.0|link|
+|[UniBEV_CNW](/projects/UniBEV/configs/unibev/ablation_md/unibev_nus_LC_cnw_256_modality_dropout_m0s100l50c50.py)|1|0.5|0.5|60.9|56.5|37.1|51.5|[link](https://surfdrive.surf.nl/files/index.php/s/NAWBeB3nQelKyes)|
+|[UniBEV_CNW](/projects/UniBEV/configs/unibev/ablation_md/unibev_nus_LC_cnw_256_modality_dropout_m25s75l50c50.py)|0.75|0.5|0.5|63.1|56.2|36.6|52.0|[link](https://surfdrive.surf.nl/files/index.php/s/SSyKgELjOC6Tjt1)|
 |_**UniBEV_CNW**_|0.5|0.5 |0.5|64.2|58.2|35.0|52.5|link|
-|[UniBEV_CNW](/projects/UniBEV/configs/unibev/ablation_md/unibev_nus_LC_cnw_256_modality_dropout_m75s25l50c50.py)|0.25|0.5|0.5|62.6|55.9|33.6|50.7|link|
-|[UniBEV_CNW](/projects/UniBEV/configs/unibev/ablation_md/unibev_nus_LC_cnw_256_modality_dropout_m100s0l50c50.py)|0|0.5|0.5|62.6|50.6|4.6 |39.9|link|
+|[UniBEV_CNW](/projects/UniBEV/configs/unibev/ablation_md/unibev_nus_LC_cnw_256_modality_dropout_m75s25l50c50.py)|0.25|0.5|0.5|62.6|55.9|33.6|50.7|[link](https://surfdrive.surf.nl/files/index.php/s/BlSfzontN610SAj)|
+|[UniBEV_CNW](/projects/UniBEV/configs/unibev/ablation_md/unibev_nus_LC_cnw_256_modality_dropout_m100s0l50c50.py)|0|0.5|0.5|62.6|50.6|4.6 |39.9|[link](https://surfdrive.surf.nl/files/index.php/s/QrS9AAlRuanqfBa)|
 
 
 ## Poster

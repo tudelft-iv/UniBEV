@@ -2,13 +2,12 @@
 # inference with only LiDAR input
 # inference on complete NuScenes dataset
 
-_base_ = ['../uniquery_detr_fusion_voxel_net_nus_LC_full_linear_channel_norm_attn_256_pip4_layer_3_modality_dropout.py']
+_base_ = ['../unibev_nus_LC_cnw_256_modality_dropout.pyy']
 
-hostname = 'hpc'
-dataset_type = 'NuScenesDataset_BEVFormerFusion'
+dataset_type = 'NuScenesDataset'
 data_root = 'data/nuscenes/'
-sub_dir = 'mmdet3d_bevformer/'
-val_ann_file = sub_dir + 'nuscenes_infos_temporal_val.pkl'
+sub_dir = 'mmdet3d_old_cor/'
+val_ann_file = sub_dir + 'nuscenes_infos_val.pkl'
 file_client_args = dict(backend='disk')
 bev_h_ = 200
 bev_w_ = 200
@@ -59,7 +58,7 @@ test_pipeline = [
         transforms=[
             dict(type='PadMultiViewImage', size_divisor=32),
             dict(
-                type='DefaultFormatBundle3DBEVFusion',
+                type='DefaultFormatBundle3D',
                 class_names=class_names,
                 with_label=False),
             dict(type='CustomCollect3D', keys=['points', 'img'])

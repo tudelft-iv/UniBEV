@@ -2,13 +2,12 @@
 # inference with only LiDAR input
 # inference on complete NuScenes dataset
 
-_base_ = ['../uniquery_detr_fusion_voxel_net_nus_LC_full_avg_256_pip4_layer_3_modality_dropout.py']
+_base_ = ['../unibev_nus_LC_cnw_256_modality_dropout.py']
 
-hostname = 'hpc'
-dataset_type = 'NuScenesDataset_BEVFormerFusion'
+dataset_type = 'NuScenesDataset'
 data_root = 'data/nuscenes/'
-sub_dir = 'mmdet3d_bevformer/'
-val_ann_file = sub_dir + 'nuscenes_infos_temporal_val.pkl'
+sub_dir = 'mmdet3d_old_cor/'
+val_ann_file = sub_dir + 'nuscenes_infos_val.pkl'
 file_client_args = dict(backend='disk')
 bev_h_ = 200
 bev_w_ = 200
@@ -16,7 +15,7 @@ dist_params = dict(backend='gloo')
 
 img_norm_cfg = dict(mean=[103.530, 116.280, 123.675], std=[1.0, 1.0, 1.0], to_rgb=False)
 input_modality =  dict(
-    use_lidar=True,
+    use_lidar=False,
     use_camera=True,
     use_radar=False,
     use_map=False,
@@ -34,20 +33,6 @@ model = dict(
 )
 
 test_pipeline = [
-    dict(
-        type='LoadPointsFromFile',
-        coord_type='LIDAR',
-        load_dim=5,
-        use_dim=5,
-    ),
-    dict(
-        type='LoadPointsFromMultiSweeps',
-        sweeps_num=10,
-        use_dim=[0, 1, 2, 3, 4],
-        file_client_args=file_client_args,
-        pad_empty_sweeps=True,
-        remove_close=True
-    ),
     dict(type='LoadMultiViewImageFromFiles', to_float32=True),
     dict(type='NormalizeMultiviewImage', **img_norm_cfg),
     dict(type='PadMultiViewImage', size_divisor=32),
@@ -57,12 +42,11 @@ test_pipeline = [
         pts_scale_ratio=1,
         flip=False,
         transforms=[
-            dict(type='PadMultiViewImage', size_divisor=32),
             dict(
-                type='DefaultFormatBundle3DBEVFusion',
+                type='DefaultFormatBundle3D',
                 class_names=class_names,
                 with_label=False),
-            dict(type='CustomCollect3D', keys=['points', 'img'])
+            dict(type='CustomCollect3D', keys=['img'])
         ])
 ]
 
@@ -90,7 +74,6 @@ eval_pipeline = [
     dict(
         type='LoadPointsFromMultiSweeps',
         sweeps_num=10,
-        use_dim=[0, 1, 2, 3, 4],
         file_client_args=file_client_args),
     dict(
         type='DefaultFormatBundle3D',
@@ -98,5 +81,4 @@ eval_pipeline = [
         with_label=False),
     dict(type='Collect3D', keys=['points'])
 ]
-
-evaluation = dict(pipeline=test_pipeline)
+evaluation = dict(pipeline=eval_pipeline)
