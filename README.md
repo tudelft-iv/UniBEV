@@ -32,8 +32,8 @@ all sensor modalities follow a uniform approach to resample features from the na
 ### Main results
 |Method|Training Modality|L+C mAP| L mAP| C mAP|Summary| Model |
 |------|:---------------:|:-----:|------|------|-------|-------|
-|[UniBEV_C](/projects/UniBEV/configs/unibev/unibev_nus_C.py)|C|-|-|36.9|-|link|
-|[UniBEV_L](/projects/UniBEV/configs/unibev/unibev_nus_L.py)|L|-|57.8|-|-|link|
+|[UniBEV_C](/projects/UniBEV/configs/unibev/unibev_nus_C.py)|C|-|-|36.9|-|[link](https://surfdrive.surf.nl/files/index.php/s/CxzNt5rtTzV4FHP)|
+|[UniBEV_L](/projects/UniBEV/configs/unibev/unibev_nus_L.py)|L|-|57.8|-|-|[link](https://surfdrive.surf.nl/files/index.php/s/H8cWVN8Htdhg7zC)|
 |[UniBEV_CNW](/projects/UniBEV/configs/unibev/unibev_nus_LC_cnw_256_modality_dropout.py)|L+C(MD)|64.2|58.2|35.0|52.5|[link](https://surfdrive.surf.nl/files/index.php/s/CX1xt8FeUiiDlIS)|
 |[UniBEV_avg](/projects/UniBEV/configs/unibev/unibev_nus_LC_avg_256_modality_dropout.py)|L+C(MD)|64.1|57.6|35.1|52.3|[link](https://surfdrive.surf.nl/files/index.php/s/QH2N9EJlPM2oaiT)|       
 |[UniBEV_cat](/projects/UniBEV/configs/unibev/unibev_nus_LC_cat_128_modality_dropout.py)|L+C(MD)|63.8|57.6|34.4|51.9|[link](https://surfdrive.surf.nl/files/index.php/s/w8nhdpUPhrrkus8)|
